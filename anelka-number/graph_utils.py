@@ -118,5 +118,9 @@ class AnelkaNumberGraph:
                                      pos,
                                      edge_labels=edge_labels,
                                      ax=axis)
+        
+        # free up memory since we already have the graph
+        del subgraph
+
         fig.tight_layout()
         return fig

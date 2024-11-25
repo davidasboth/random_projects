@@ -7,7 +7,7 @@ from graph_utils import AnelkaNumberGraph
 # load the graph - either create it or read it in from a pickle file
 local_path = Path.cwd().joinpath("anelka-number")
 
-@st.cache_data
+#@st.cache_data
 def get_graph():
     return AnelkaNumberGraph.get_graph(local_path.joinpath("graph.pkl"), local_path.joinpath("data", "transfers_cleaned.csv"))
 
@@ -49,7 +49,7 @@ with st.expander("Details"):
         - but if player X transferred to a club in 1992, played there for 10 years then retired, the app assumes they were there for one season then disappeared since we have no "second" transfer until which we can fill in the gap
             """)
 
-@st.cache_data
+#@st.cache_data
 def get_players():
     return graph.get_players()
 
@@ -75,4 +75,4 @@ if player_select:
     anelka_number = graph.get_anelka_number(player_select)
     st.subheader(f"{player_select}'s Anelka number is {anelka_number}")
     only_one = graph_option == "one shortest path"
-    st.pyplot(graph.plot_anelka_number_graph(player_select, only_one=only_one))
+    st.pyplot(graph.plot_anelka_number_graph(player_select, only_one=only_one), clear_figure=True)
