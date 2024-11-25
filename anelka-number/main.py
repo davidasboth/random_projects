@@ -3,7 +3,7 @@ import streamlit as st
 from graph_utils import AnelkaNumberGraph
 
 # load the graph - either create it or read it in from a pickle file
-graph = AnelkaNumberGraph.get_graph("graph.pkl", "transfers_cleaned.csv")
+graph = AnelkaNumberGraph.get_graph("./the-anelka-number/graph.pkl", "./the-anelka-number/data/transfers_cleaned.csv")
 
 #####################
 #   Streamlit app
