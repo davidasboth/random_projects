@@ -7,7 +7,11 @@ from graph_utils import AnelkaNumberGraph
 # load the graph - either create it or read it in from a pickle file
 local_path = Path.cwd().joinpath("anelka-number")
 
-graph = AnelkaNumberGraph.get_graph(local_path.joinpath("graph.pkl"), local_path.joinpath("data", "transfers_cleaned.csv"))
+@st.cache_data
+def get_graph():
+    return AnelkaNumberGraph.get_graph(local_path.joinpath("graph.pkl"), local_path.joinpath("data", "transfers_cleaned.csv"))
+
+graph = get_graph()
 
 # #####################
 # #   Streamlit app
