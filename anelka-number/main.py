@@ -53,26 +53,16 @@ with st.expander("Details"):
 def get_players():
     return graph.get_players()
 
-col1, col2 = st.columns(2)
-
-with col1:
-    player_select = st.selectbox("Select a player",
-                                get_players(),
-                                label_visibility="collapsed",
-                                index=None,
-                                placeholder="Select a player...")
-with col2:
-    graph_option = st.radio(
-        "Display:",
-        ["one shortest path", "all shortest paths"],
-        captions=[
-            "smaller graph, only one possible path shown",
-            "all possible paths, bigger graph",
-        ]
-    )
+player_select = st.selectbox("Select a player",
+                            get_players(),
+                            label_visibility="collapsed",
+                            index=None,
+                            placeholder="Select a player...")
 
 if player_select:
     anelka_number = graph.get_anelka_number(player_select)
     st.subheader(f"{player_select}'s Anelka number is {anelka_number}")
-    only_one = graph_option == "one shortest path"
-    st.pyplot(graph.plot_anelka_number_graph(player_select, only_one=only_one), clear_figure=True)
+    
+    # just load the image instead
+    player_img_path = local_path.joinpath("images", f"{player_select}.png")
+    st.image(str(player_img_path))
