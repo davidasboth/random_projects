@@ -1,0 +1,60 @@
+SELECT 
+  ?match ?matchLabel 
+  ?date 
+  ?homeTeam ?homeTeamLabel 
+  ?awayTeam ?awayTeamLabel 
+  ?homeCountry ?homeCountryLabel
+  ?homeCountryFlagUnicode ?homeCountryFlagUnicodeLabel
+  ?awayCountry ?awayCountryLabel
+  ?awayCountryFlagUnicode ?awayCountryFlagUnicodeLabel
+  ?homeGoals ?awayGoals
+WHERE {
+  # Find matches involving the Hungarian national team
+  ?match wdt:P31 wd:Q17315159;  # instance of football match
+         p:P1923 ?teamParticipation.
+  
+  # Determine team roles
+  ?teamParticipation ps:P1923 wd:Q170561;  # Hungarian team participating
+                     pq:P3831 ?teamRole.
+  
+  # Separate home and away teams
+  OPTIONAL {
+    ?match p:P1923 ?homeTeamStatement.
+    ?homeTeamStatement ps:P1923 ?homeTeam;
+                       pq:P3831 wd:Q24633211.  # home team role
+    ?homeTeam wdt:P1532 ?homeCountry. # extract home country (not football team name)
+    ?homeCountry wdt:P163 ?homeCountryFlag. # extract flag record
+    ?homeCountryFlag wdt:P487 ?homeCountryFlagUnicode. # unicode character
+  }
+  
+  OPTIONAL {
+    ?match p:P1923 ?awayTeamStatement.
+    ?awayTeamStatement ps:P1923 ?awayTeam;
+                       pq:P3831 wd:Q24633216.  # away team role
+    ?awayTeam wdt:P1532 ?awayCountry. # extract away country (not football team name)
+    ?awayCountry wdt:P163 ?awayCountryFlag. # extract flag record
+    ?awayCountryFlag wdt:P487 ?awayCountryFlagUnicode. # unicode character
+  }
+  
+  # Get match date
+  OPTIONAL { ?match wdt:P585 ?date. }
+  
+  # Get goals for home and away teams
+  OPTIONAL {
+    ?match p:P1923 ?homeGoalsStatement.
+    ?homeGoalsStatement pq:P1351 ?homeGoals;
+                        pq:P3831 wd:Q24633211.  # home team goals
+  }
+  
+  OPTIONAL {
+    ?match p:P1923 ?awayGoalsStatement.
+    ?awayGoalsStatement pq:P1351 ?awayGoals;
+                        pq:P3831 wd:Q24633216.  # away team goals
+  }
+  
+  # Get labels
+  SERVICE wikibase:label { 
+    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". 
+  }
+}
+ORDER BY DESC(?date)
