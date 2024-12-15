@@ -22,31 +22,31 @@ def main():
     # if none, select a match at random
     today = datetime.today()
 
-    options = []
-    match_to_print = None
+    matches_to_print = []
 
     for m in matches:
         if m["date"] < today and m["date"].month == today.month and m["date"].day == today.day:
-            options.append(m)
+            matches_to_print.append(m)
 
-    on_this_day = len(options) > 0
+    on_this_day = len(matches_to_print) > 0
 
-    if on_this_day:
-        match_to_print = random.choice(options)
-    else:
-        match_to_print = random.choice(matches)
+    if len(matches_to_print) == 0:
+        matches_to_print.append(random.choice(matches))
 
     # construct the message
-    def print_match(match, is_today):
+    def print_matches(matches, is_today):
         message = ""
         if is_today:
-            message = f"""On this day in {match["date"].year}: {match["homeCountryLabel"]} {match["homeCountryFlagUnicode"]} {match["homeGoals"]} : {match["awayGoals"]} {match["awayCountryFlagUnicode"]} {match["awayCountryLabel"]}\n\nWikidata entry: {match["match"]}"""
+            message = f'On this day ({today.strftime("%b %d")}):\n'
+            for match in matches:
+                message += f'\n {match["homeCountryLabel"]} {match.get("homeCountryFlagUnicode", "")} {match["homeGoals"]} : {match["awayGoals"]} {match.get("awayCountryFlagUnicode", "")} {match["awayCountryLabel"]} ({match["date"].year})'
         else:
-            message = f"""No entry found for {today.strftime("%b %d")}. Here's a random game instead:\n\n{match["homeCountryLabel"]} {match["homeCountryFlagUnicode"]} {match["homeGoals"]}: {match["awayGoals"]} {match["awayCountryFlagUnicode"]} {match["awayCountryLabel"]} ({match["date"].strftime("%d %b %Y")})\n\nWikidata entry: {match["match"]}"""
+            match = matches[0]
+            message = f'No entry found for {today.strftime("%b %d")}. Here is a random game instead:\n\n {match["homeCountryLabel"]} {match.get("homeCountryFlagUnicode", "")} {match["homeGoals"]} : {match["awayGoals"]} {match.get("awayCountryFlagUnicode", "")} {match["awayCountryLabel"]} ({match["date"].strftime("%d %b %Y")})'
         
         return message
 
-    message = print_match(match_to_print, on_this_day)
+    message = print_matches(matches_to_print, on_this_day)
 
     # post the message
     client = Client()
