@@ -18,6 +18,19 @@ def main():
     for m in matches:
         m["date"] = datetime.strptime(m["date"], "%Y-%m-%dT%H:%M:%SZ")
 
+    # exclude weird matches e.g. teams playing against themselves
+    def is_valid_match(match):
+        # both teams have to be defined
+        if "homeTeam" not in match or "awayTeam" not in match:
+            return False
+        if match["homeTeam"] == match["awayTeam"]:
+            return False
+        
+        # no issues, yay
+        return True
+    
+    matches = [m for m in matches if is_valid_match(m)]
+
     # find matches "on this day"
     # if none, select a match at random
     today = datetime.today()
